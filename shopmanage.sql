@@ -11,11 +11,32 @@
  Target Server Version : 100410
  File Encoding         : 65001
 
- Date: 15/06/2020 23:05:00
+ Date: 29/06/2020 21:10:44
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for cart
+-- ----------------------------
+DROP TABLE IF EXISTS `cart`;
+CREATE TABLE `cart`  (
+  `shopid` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `userid` char(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `shopnum` int(11) NULL DEFAULT NULL,
+  `shopprice` decimal(6, 2) NULL DEFAULT NULL,
+  `address` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`shopid`, `userid`) USING BTREE,
+  INDEX `userid`(`userid`) USING BTREE,
+  CONSTRAINT `cart_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `cart_ibfk_2` FOREIGN KEY (`shopid`) REFERENCES `shop` (`shopid`) ON DELETE RESTRICT ON UPDATE RESTRICT
+) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of cart
+-- ----------------------------
+INSERT INTO `cart` VALUES ('420219', '713116628', 1, 450.00, '');
 
 -- ----------------------------
 -- Table structure for shop
@@ -25,7 +46,7 @@ CREATE TABLE `shop`  (
   `shopid` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   `shopname` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `shopnum` int(11) NULL DEFAULT NULL,
-  `shopurl` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `shopurl` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `shopprice` decimal(6, 2) NULL DEFAULT NULL,
   `shopinfo` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
   `stime` timestamp(0) NOT NULL DEFAULT date_format,
@@ -35,21 +56,45 @@ CREATE TABLE `shop`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for shopcart
+-- Records of shop
 -- ----------------------------
-DROP TABLE IF EXISTS `shopcart`;
-CREATE TABLE `shopcart`  (
-  `shopid` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `userid` char(12) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `shopnum` int(11) NULL DEFAULT NULL,
-  `shopprice` decimal(6, 2) NULL DEFAULT NULL,
+INSERT INTO `shop` VALUES ('2342057', '苹果', 496, 'E:/图片/shop/2342057.jpg', 3.88, '产自xxxxx', '2020-06-28 00:00:00', 8, 1);
+INSERT INTO `shop` VALUES ('420219', '小米', 120, 'E:/图片/shop/420219.jpg', 450.00, '达瓦达瓦', '2020-06-28 00:00:00', 1, 1);
+INSERT INTO `shop` VALUES ('516542979316', '潮流上衣', 4500, 'E:/图片/shop/516542979316.jpg', 78.00, '啊啊啊啊啊啊啊啊啊啊啊啊啊', '2020-06-29 00:00:00', 5, 1);
+INSERT INTO `shop` VALUES ('55843956', '青枣', 20000, 'E:/图片/shop/55843956.jpg', 7.20, '啊啊啊啊啊啊啊啊啊啊啊', '2020-06-29 00:00:00', 8, 1);
+INSERT INTO `shop` VALUES ('6032958', 'mac电脑i7', 11111, 'E:/图片/shop/6032958.jpg', 7800.00, 'aaaaaaaaaaaaaaaaaaaaaaaaa', '2020-06-29 00:00:00', 0, 1);
+INSERT INTO `shop` VALUES ('62533929544', '华为P30', 88, 'E:/图片/shop/62533929544.jpg', 4500.00, '华为科技嘻嘻嘻嘻嘻嘻嘻', '2020-06-28 00:00:00', 1, 1);
+INSERT INTO `shop` VALUES ('748521806', '金牛插座', 1200000, 'E:/图片/shop/748521806.jpg', 20.00, '不过电', '2020-06-29 00:00:00', 13, 1);
+INSERT INTO `shop` VALUES ('780856482', '乐视Tv', 2000, 'E:/图片/shop/780856482.jpg', 4500.00, 'dddddddddddddddddddddd', '2020-06-28 00:00:00', 10, 1);
+INSERT INTO `shop` VALUES ('791922', 'Huawei数据线', 25000, 'E:/图片/shop/791922.jpg', 30.00, 'emmmm', '2020-06-29 00:00:00', 4, 1);
+
+-- ----------------------------
+-- Table structure for uorder
+-- ----------------------------
+DROP TABLE IF EXISTS `uorder`;
+CREATE TABLE `uorder`  (
+  `orderid` char(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `userid` char(12) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `shopid` char(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `ordertime` timestamp(0) NOT NULL DEFAULT date_format,
+  `total` decimal(10, 2) NULL DEFAULT NULL,
   `address` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `total` decimal(6, 2) NULL DEFAULT NULL,
-  PRIMARY KEY (`shopid`, `userid`) USING BTREE,
+  `username` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `usertel` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `orderstatus` smallint(255) NULL DEFAULT NULL,
+  `shopnum` int(11) NULL DEFAULT NULL,
+  PRIMARY KEY (`orderid`) USING BTREE,
+  INDEX `shopid`(`shopid`) USING BTREE,
   INDEX `userid`(`userid`) USING BTREE,
-  CONSTRAINT `shopcart_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE RESTRICT ON UPDATE RESTRICT,
-  CONSTRAINT `shopcart_ibfk_2` FOREIGN KEY (`shopid`) REFERENCES `shop` (`shopid`) ON DELETE RESTRICT ON UPDATE RESTRICT
+  CONSTRAINT `uorder_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE RESTRICT ON UPDATE RESTRICT,
+  CONSTRAINT `uorder_ibfk_2` FOREIGN KEY (`shopid`) REFERENCES `shop` (`shopid`) ON DELETE RESTRICT ON UPDATE RESTRICT
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of uorder
+-- ----------------------------
+INSERT INTO `uorder` VALUES ('120445523', '201761648', '2342057', '2020-06-28 00:00:00', 3.88, '湖北省荆州市荆州区学院路85号', '彭奇威', '13264673593', 3, 1);
+INSERT INTO `uorder` VALUES ('142449868526', '201761648', '2342057', '2020-06-28 00:00:00', 3.88, '湖北省荆州市荆州区学院路85号', '彭奇威', '13264673593', 2, 1);
 
 -- ----------------------------
 -- Table structure for user
@@ -63,33 +108,15 @@ CREATE TABLE `user`  (
   `userage` date NULL DEFAULT NULL,
   `usertel` char(12) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `userimg` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `type` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`userid`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('08040228704', '繁华落尽', '123456', '湖北省天门市', '2019-12-28', '13264673593', '');
-INSERT INTO `user` VALUES ('1628345', '昵称', '13264673593', '天门', '2019-12-28', '13264673593', 'e:/图片/user/1628345.jpg');
-INSERT INTO `user` VALUES ('201761648', '彭奇威', '123456', '湖北省荆州市荆州区学院路85号', '1998-07-07', '13264673593', 'e:/图片/user/201761648.png');
-INSERT INTO `user` VALUES ('23557188503', '李高山', '123456', '湖北天门', '2019-12-28', '13264673593', '');
-INSERT INTO `user` VALUES ('4170670622', '小话', '123456', '湖北', '2019-12-28', '13264673593', '');
-INSERT INTO `user` VALUES ('4207455269', '你告诉', '123456', '湖北天门', '2019-12-28', '13264673593', '');
-
--- ----------------------------
--- Table structure for userorder
--- ----------------------------
-DROP TABLE IF EXISTS `userorder`;
-CREATE TABLE `userorder`  (
-  `orderid` char(25) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
-  `userid` char(12) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `ordertime` timestamp(0) NOT NULL DEFAULT date_format,
-  `total` decimal(6, 2) NULL DEFAULT NULL,
-  `address` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
-  `orderstatus` smallint(255) NULL DEFAULT NULL,
-  PRIMARY KEY (`orderid`) USING BTREE,
-  INDEX `userid`(`userid`) USING BTREE,
-  CONSTRAINT `userorder_ibfk_1` FOREIGN KEY (`userid`) REFERENCES `user` (`userid`) ON DELETE RESTRICT ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+INSERT INTO `user` VALUES ('201761648', '彭奇威', '123456', '湖北省荆州市荆州区学院路85号', '1998-06-27', '13264673593', 'e:/图片/user/201761648.jpg', 1);
+INSERT INTO `user` VALUES ('713116628', '凤梧桐不止', '654123', '湖北省荆州市荆州区学院路86号', '2000-07-11', '13264673594', 'e:/图片/user/713116628.jpg', 0);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
